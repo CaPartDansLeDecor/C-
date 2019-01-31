@@ -47,6 +47,7 @@ void inputAnalyzer(){
 	int i;
 	bool end = false;
 	bool error = false;
+	
 	while(!end){ //Permet de sortir de l'application quand l'utilisateur rentre quit 
 		while(strcmp(s.c_str(),"quit")!=0 && (s.find("$./analog ",0)!=0 || strlen(s.c_str())<15)){ //Boule tant que la syntaxe de la commande n'est pas correcte
 			printf("Invalid input. Syntax : $./analog [-g FileName.dot] [-e] [-t time] FileName.log\r\n");
@@ -55,7 +56,8 @@ void inputAnalyzer(){
 			printf("\r\n");
 		}
 		printf("\r\n");
-		
+	  //$./analog
+	  
 		//Initialisation des options et de l'itérateur
 		memset(heure, 0,taille);
 		memset(logName, 0,taille);
@@ -71,18 +73,21 @@ void inputAnalyzer(){
 		if(strcmp(s.c_str(),"quit")!=0){
 			options[0]=1;
 			while(s.find(" -")!=string::npos && error == false){ //Boucle pour chercher les options
+			  
 				it = s.begin();
 				while(*it != '-' && it != s.end()){
 					++it;
 				}
 				*it = '_'	; //Permet de masquer les options déja traitées pour les recherches suivantes
+				
+				
 				switch (*(++it)){
 				  case 'g':
 					insertInto(dotName,&it,&s,&error, options,1);
 					break;
 					
 					case 'e' :
-					options[2]=1; 
+					options[2]=1;
 					break;
 					
 					case 't' :
@@ -103,12 +108,16 @@ void inputAnalyzer(){
 				++it;
 			}
 			
-			it++;
+			//Capte l'erreur ou l'utilisateur ne renseigne pas le nom de fichier
+			if(it == s.end()){
+			  error  = true;
+			}
+			
 			
 			//Copie le nom de fichier log
 			i = 0;
-			while(it != s.end() && error == false){
-				logName[i++]=*(it++);
+			while(error == false && ++it != s.end()){
+				logName[i++]=*(it);
 			}
 			
 			if(!error){
@@ -149,7 +158,8 @@ void runRequest(bool options[4], string f1, string f2, Date d){
 }
 
 void insertInto(char* toBeFilled, string::iterator* it, string* s, bool* error, bool* options,int option){
-  if(*(++(++(*it)))!='-'){ //Permet de verifier l'utilisateur n'a pas oublié la cible
+  if(++(*it)==s->end()){errorOpt(error);} //Capte l'erreur ou l'utilisateur finit par une option sans renseigner ni le log ni la cible
+  else if(*(++(++(*it)))!='-'){ //Permet de verifier l'utilisateur n'a pas oublié la cible
     options[option]=1;
     int i = 0;
     while(*(*it)!= ' ' && (*it) != s->end()){

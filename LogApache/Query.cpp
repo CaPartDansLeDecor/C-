@@ -14,26 +14,45 @@
 #include <iostream>
 #include <map>
 #include <stdbool.h>
+#include <string.h>
+#include <algorithm>
+#include <fstream> 
 using namespace std;
 
 //------------------------------------------------------ Include personnel
 #include "Interface.h"
 #include "Query.h"
-
-//#include "Logline.h"
+#include "Logline.h"
 
 //------------------------------------------------------------- Constantes
 
 //----------------------------------------------------------------- PUBLIC
 
 //----------------------------------------------------- Méthodes publiques
+
+template<typename A, typename B>
+std::pair<B,A> flip_pair(const std::pair<A,B> &p)
+{
+  return std::pair<B,A>(p.second, p.first);
+}
+
+template<typename A, typename B>
+std::multimap<B,A> flip_map(const std::map<A,B> &src)
+{
+  std::multimap<B,A> dst;
+  std::transform(src.begin(), src.end(), std::inserter(dst, dst.begin()), ::flip_pair<A,B>);
+  return dst;
+}
+
 void Query::run ()
 // Algorithme :
 //
 {
-  if(options[0]){
-    printTop10();
-  }
+  printTop10();
+  if(options[3]){
+    //Traitement Heure
+  } 
+   
 } //----- Fin de Méthode
 
 void Query::printTop10 ()
@@ -41,7 +60,44 @@ void Query::printTop10 ()
   //
 {
   map<string,int> toBeRanked;
-  
+  std::map<string,int>::iterator it;
+  ifstream ifLog ;
+  ifLog.open(logFile);
+  string s;
+  if(ifLog)
+  {
+    
+    while(getline(ifLog,s)){
+      Logline logAct = Logline(s);
+      bool valide = true;
+      if(options[2]){
+        if(logAct.url.find(".css")!=std::string::npos){
+          valide = false;
+        }
+      }
+      if(options[3]){
+        
+      } 
+      if(valide){
+        it = toBeRanked.find(logAct.url);
+        if(it==toBeRanked.end()){
+          toBeRanked.insert(make_pair(logAct.url,1));
+        } else {
+          (*it).second += 1;
+        }
+      }
+    }
+    multimap<int,string> top10;
+    top10 = flip_map(toBeRanked);
+    std::multimap<int,string>::reverse_iterator ri = top10.rbegin();
+    int i = 1;
+    do {
+      cout << i++ << " : " << (*ri).second << " : " << (*ri).first << " hits" << endl;
+    } while(i<=10 && (++ri)!=top10.rend()) ;
+  } else
+  {
+    cerr << "Erreur d'ouverture du fichier" << endl;
+  }
 } //----- Fin de Méthode
 
 void Query::afficher(){
@@ -83,8 +139,7 @@ Query::Query (bool opt[4],  string nomFic1,  string nomFic2, Date d )
   dotFile = nomFic1;
   logFile = nomFic2;
   date = d;
-  afficher();
-  //run();
+  run();
   
 } //----- Fin de Query
 

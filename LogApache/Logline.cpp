@@ -70,39 +70,38 @@ Logline::Logline (string ligne)
 #endif
   
   //Heure
-  string::iterator it_ligne = ligne.begin();
-  while(*(++it_ligne)!=':'){
-  }
-  date.heure = atoi(&(*(++it_ligne)));
-
+  
+  int i = 0;
+  while(ligne.at(++i)!=':'){}
+  date.heure = atoi(&ligne[++i]);
   //Minutes
-  ++(++it_ligne);
-  date.minutes = atoi(&(*(++it_ligne)));
+  
+  ++(++i);
+  date.minutes = atoi(&ligne[++i]);
   
   //URL
-  while(*(++it_ligne)!='"'){
-  }
-  while(*(++it_ligne)!=' '){
-  }
-  char* toBeFilled = new char[100];
+  while(ligne.at(++i)!='"'){}
+  while(ligne.at(++i)!=' '){}
+
   int j =0;
-  while(*(++it_ligne)!=' '){
-    toBeFilled[j++]=*it_ligne;
+  int former_i = i;
+  while(ligne.at(++i)!=' '){
+    j++;
   }
-  url = string(toBeFilled);
+
+  url = ligne.substr(former_i,j+1);
   
   //Referer
-  while(*(++it_ligne)!='"'){
-  }
-  
-  while(*(++it_ligne)!='"'){
-  }
-  char* toBeFilled2 = new char[100];
+  while(ligne.at(++i)!='"'){}
+  while(ligne.at(++i)!='"'){}
+
   j = 0;
-  while(*(++it_ligne)!='"'){
-    toBeFilled2[j++]=*it_ligne;
+  former_i = i;
+  while(ligne.at(++i)!=' '){
+    j++;
   }
-  referer = string(toBeFilled2);
+  referer = ligne.substr(former_i,j+1);
+
   
   #ifdef MAP
   cout<< "date.heure "<< date.heure <<endl;
@@ -111,8 +110,8 @@ Logline::Logline (string ligne)
   cout<< "referer "<< referer <<endl;
   #endif
   
-  delete [] toBeFilled;
-  delete [] toBeFilled2;
+  
+ 
 } //----- Fin de Logline
 
 

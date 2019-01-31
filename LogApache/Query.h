@@ -40,6 +40,23 @@ public:
     // Contrat :
     //
     
+    /*template<typename A, typename B>
+    std::pair<B,A> swap_pair(const std::pair<A,B> &paire);
+    // Mode d'emploi :
+    // Il faut passer en paramètre une paire std::pair
+    // Contrat :
+    // La méthode renvoie la paire passée en paramètre, mais inversée.
+    
+    template<typename A, typename B>
+    std::multimap<B,A> flip_map(const std::map<A,B> &src);*/
+    // Mode d'emploi :
+    // Il faut passer en paramètre une map
+    // Contrat :
+    // La méthode renvoie une multimap qui correspond à l'inversion de la map passée en paramètre
+    
+    
+    
+    
   void run();
     // Mode d'emploi :
     //
@@ -48,9 +65,9 @@ public:
 
   void printTop10();
     // Mode d'emploi :
-    //
+    // Appeler la méthode sans paramètres
     // Contrat :
-    //
+    // La méthode affiche le top10 des fichiers les plus visités du .log
     
 //------------------------------------------------- Surcharge d'opérateurs
     //Query & operator = ( const Query & unQuery );
@@ -96,5 +113,9 @@ protected:
 
 //-------------------------------- Autres définitions dépendantes de <Query>
 
+
+
+//#include "Template.cpp"
 #endif // XXX_H
+
 

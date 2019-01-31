@@ -73,8 +73,9 @@ protected:
 //----------------------------------------------------- Méthodes protégées
 
 //----------------------------------------------------- Attributs protégés
-string url, referer;
-Date date;
+  string url, referer;
+  Date date;
+  friend class Query;
 };
 
 //-------------------------------- Autres définitions dépendantes de <Logline>
